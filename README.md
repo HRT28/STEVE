@@ -1,2 +1,2 @@
 # STEVE
-Soil trace element visualiaation and evaluation model
+Soil trace element visualisation and evaluation model
