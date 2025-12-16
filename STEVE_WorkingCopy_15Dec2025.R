@@ -1,4 +1,4 @@
-\# Global variables --------------------------------------------------------
+# Global variables --------------------------------------------------------
 
 ## General parameters
 iTime <- 33 # Simulation time (yrs)
@@ -342,4 +342,5 @@ LeachedConcs <- data.frame(1:iTime, LeachedConc)
 # 10/6/24   | H Thompson  | Wrote in line to calculate concentration of TE in leachate at end of simulation 
 # 30/7/25   | H Thompson  | Functions for Langmuir Kd and yearly weather data (RF only) integrated
 # 17/12/25  | H Thompson  | Code tidied, uploaded to github
+
 
