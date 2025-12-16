@@ -1,15 +1,12 @@
-# Rothamsted Park Grass parameters Plot 92a (limed to pH 7)
-# Data for As
-
-# Global variables --------------------------------------------------------
+\# Global variables --------------------------------------------------------
 
 ## General parameters
-iTime <- 33 #52 # Simulation time (yrs)
+iTime <- 33 # Simulation time (yrs)
 iSimulationDepth <- 70 # Simulation depth (cm)
 iIncorporationDepth <- 1  # The depth (cm) to which CTE is incorporated into the soil. Must be >0. If not incorporated, TE is still added to top cm
 
 ## Climate parameters
-iRainfall <- Rain1907_1939$TotalRF # Rainfall and irrigation (mm/yr). Infiltrates and is taken up by plants down to root depth
+iRainfall <- 686 # Rainfall and irrigation (mm/yr). Infiltrates and is taken up by plants down to root depth
 iET <- 448 # Evapotranspiration (mm/yr). Taken up evenly by plants over root depth - despite uneven root distribution
 
 ### Yearly rainfall 
@@ -25,9 +22,9 @@ if (length(iRainfall) == 1) {
 
 ## Soil parameters 
 iSoilDensity <- 1.1 # Bulk density (t/m^3)
-iSliceWaterMass <- 50 #T he mass of water (t/ha) that a 1cm slice of soil can hold. Essentially the porosity (%)
+iSliceWaterMass <- 50 # The mass of water (t/ha) that a 1cm slice of soil can hold. Essentially the porosity (%)
 iSoilLoss <- 0.72 # The annual soil loss (t/ha)
-iInitialSoilCon <- 13.02 # 23.82 # Initial concentration of TE in soil (mg/kg). Must be > 0
+iInitialSoilCon <- 13.02 #  Initial concentration of TE in soil (mg/kg). Must be > 0
 iKdSoil <- 440 # Soil adsorption coefficient
 
 ### Kd parameters
@@ -37,13 +34,13 @@ iLang_K <- 0.01 # Langmuir affinity constant (same units⁻¹)
 
 ## Plant parameters
 iRootDepth <- 36 # The root depth (cm). Must be <= simulation depth
-iDryBiomassProduced <- 4.684 # 5.374 # Yield of biomass produced (t/ha)
+iDryBiomassProduced <- 4.684 # Yield of biomass produced (t/ha)
 iPercentRemoved <- 100 # Percentage of biomass removed
 iK <- 0 # Decay constant (must be between 0-0.5, applicable to TEs that have plant-regulated uptake, particularly Cu. If not paplicable, set to 0)
-iInitialCropCon <- 0.439 # 0.100 # Initial crop conc. (mg/kg d.w.) - must be >0 otherwise RAF will be 0
+iInitialCropCon <- 0.439 # Initial crop conc. (mg/kg d.w.) - must be >0 otherwise RAF will be 0
 
 ## Contaminant parameters
-iConApplied <- 373 # 4.0 #annual amount of TE (g) that is added per hectare
+iConApplied <- 373 # Annual amount of TE (g) that is added per hectare
 iAtmosDeposition <- 2.5 # Atmospheric deposition (g/ha/yr)
 iConAdded <- iAtmosDeposition + iConApplied
 
@@ -327,57 +324,14 @@ ValidationExport <- data.frame(1:iTime, top23)
 #write.csv(ValidationExport, row.names = F, file.path(paste0("Outputs2025"), "Validation_ConcTime1947.csv"))
 
 
-SoilConcs1 <- data.frame(1:iTime, top23)
-#SoilConcs2 <- data.frame(1:iTime, top23)
-SoilConcs <- bind_rows(SoilConcs1, SoilConcs2)
+SoilConcs <- data.frame(1:iTime, top23)
 write.csv(SoilConcs, row.names = F, file.path(paste0("Outputs2025"), 'SoilConc.csv'))
 
-PlantConcs1 <- data.frame(1:iTime, PlantData)
-#PlantConcs2 <- data.frame(1:iTime, PlantData)
-PlantConcs <- bind_rows(PlantConcs1, PlantConcs2)
+PlantConcs <- data.frame(1:iTime, PlantData)
 #write.csv(PlantConcs, row.names = F, file.path(paste0("Outputs2025"), 'PlantConc.csv'))
 
-LeachedConcs1 <- data.frame(1:iTime, LeachedConc)
-#LeachedConcs2 <- data.frame(1:iTime, LeachedConc)
-LeachedConcs <- bind_rows(LeachedConcs1, LeachedConcs2)
+LeachedConcs <- data.frame(1:iTime, LeachedConc)
 #write.csv(LeachedConcs, row.names = F, file.path(paste0("Outputs2025"), 'LeachedConc.csv'))
-
-
-# Validation concentrations - no longer needed -----------------------------------------------
-
-
-#i10 <- data.frame(iTime, top23)
-#i28 <- data.frame(iTime, top23)
-#i30 <- data.frame(iTime, top23)
-#i47 <- data.frame(iTime, top23)
-#i63 <- data.frame(iTime, top23)
-
-#PlantConcs1 <- data.frame(1:iTime, PlantData)
-
-year <- 1971
-i12.2 <- data.frame(iTime, top23)
-#i17.2 <- data.frame(iTime, top23)
-#si25.2 <- data.frame(iTime, top23)
-#i32.2 <- data.frame(iTime, top23, year)
-#i136.2 <- data.frame(iTime, top23, year)
-#i139.2 <- data.frame(iTime, top23, year)
-#i43.2 <- data.frame(iTime, top23, year)
-#i46.2 <- data.frame(iTime, top23, year)
-#i49.2 <- data.frame(iTime, top23, year)
-#i52.2 <- data.frame(iTime, top23, year)
-
-#PlantConcs2 <- data.frame(1:iTime, PlantData)
-
-library(tidyverse)
-PlantConcs <- bind_rows(PlantConcs1, PlantConcs2)
-#write.csv(PlantConcs, 'PlantConc.csv')
-
-SoilConcs <- bind_rows(i10, i28, i30, i47, i63, i12.2, i17.2, si25.2, i32.2, i136.2, i139.2, i43.2, i46.2, i49.2, i52.2)
-#write.csv(SoilConcs, "SoilConcs.csv")
-
-
-SoilConcs2 <- data.frame(1:iTime, top23)
-
 
 
 # Version info ------------------------------------------------------------
@@ -386,4 +340,6 @@ SoilConcs2 <- data.frame(1:iTime, top23)
 ---------------------------------------------------------------------------
 # 6/6/2024  | H Thompson  | Changed main loop to give read out of topsoil concentration for every year of the simulation
 # 10/6/24   | H Thompson  | Wrote in line to calculate concentration of TE in leachate at end of simulation 
-# Oct 2025 Functions for Langmuir Kd and yearly weather data integrated
+# 30/7/25   | H Thompson  | Functions for Langmuir Kd and yearly weather data (RF only) integrated
+# 17/12/25  | H Thompson  | Code tidied, uploaded to github
+
