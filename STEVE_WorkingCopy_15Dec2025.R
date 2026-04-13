@@ -40,9 +40,23 @@ iK <- 0 # Decay constant (must be between 0-0.5, applicable to TEs that have pla
 iInitialCropCon <- 0.439 # Initial crop conc. (mg/kg d.w.) - must be >0 otherwise RAF will be 0
 
 ## Contaminant parameters
-iConApplied <- 373 # Annual amount of TE (g) that is added per hectare
 iAtmosDeposition <- 2.5 # Atmospheric deposition (g/ha/yr)
-iConAdded <- iAtmosDeposition + iConApplied
+
+# NOTE! Use EITHER the single top line of code for a single yearly average input, OR the TWO lower lines of code to specify yearly inputs
+#iConApplied <- 95.6 # Annual amount of TE (g/ha/yr) = single average yearly input
+iConApplied <- rep(0, iTime) #iConApplied <- 95.6 # Leave this as is for a vector of specified inputs
+iConApplied[seq(1, iTime, by = 5)] <- 22744 # Tailor this line to represent the sequence of inputs each year. In this example, 22744 g is added every 5 years with the first application in year 1.
+
+### Yearly contaminant application
+# This function allows iConApplied to be either a single annual average value or a vector of yearly values.
+# If yearly data is available, set iConApplied to a vector of yearly values that is equal in length to iTime.
+if (length(iConApplied) == 1) {
+  ConAppliedSeries <- rep(iConApplied, iTime)
+} else if (length(iConApplied) == iTime) {
+  ConAppliedSeries <- iConApplied
+} else {
+  stop("Length of iConApplied must be 1 or equal to iTime")
+}
 
 # Output variables --------------------------------------------------------
 
@@ -247,9 +261,10 @@ MainLoop <- function()
 {
   for (year in 1: iTime)
   {
-    #Incorporation
-    MassAdded <<- MassAdded + iConAdded
-    Incorporate(iConAdded, iIncorporationDepth) # adding the contaminant annually
+    # annual contaminant input
+    ConAddedThisYear <- iAtmosDeposition + ConAppliedSeries[year]
+    MassAdded <<- MassAdded + ConAddedThisYear
+    Incorporate(ConAddedThisYear, iIncorporationDepth)
     
     SoilLoss()
     Drainage(year)
@@ -315,32 +330,33 @@ library(tidyverse)
 
 DataExport <- data.frame(1:iSimulationDepth, FinalProfile)
 MBExport <- data.frame(MassInSoilStart, MassAdded, MassRunoff, MassLeached, MassInPlants, MassInSoilFinish, checksum, top23Final)
-ValidationExport <- data.frame(1:iTime, top23)
+ValidationExport <- data.frame(1:iTime, top23) # For validating the output, if validation data exists
 # ^ Need to adjust the above to be the concentration to the appropriate depth to compare to the validation data 
 
-#dir.create(paste0("Outputs2025"), showWarnings = FALSE) #stops warnings if folder already exists
-#write.csv(DataExport, row.names = F, file.path(paste0("Outputs2025"), "profileconc1947.csv"))
-#write.csv(MBExport, row.names = F, file.path(paste0("Outputs2025"), "mass_bal1947.csv"))
-#write.csv(ValidationExport, row.names = F, file.path(paste0("Outputs2025"), "Validation_ConcTime1947.csv"))
+dir.create(paste0("Outputs2025"), showWarnings = FALSE) #stops warnings if folder already exists
+write.csv(DataExport, row.names = F, file.path(paste0("Outputs2025"), "profileconc1947.csv"))
+write.csv(MBExport, row.names = F, file.path(paste0("Outputs2025"), "mass_bal1947.csv"))
+write.csv(ValidationExport, row.names = F, file.path(paste0("Outputs2025"), "Validation_ConcTime1947.csv"))
 
 
 SoilConcs <- data.frame(1:iTime, top23)
 write.csv(SoilConcs, row.names = F, file.path(paste0("Outputs2025"), 'SoilConc.csv'))
 
 PlantConcs <- data.frame(1:iTime, PlantData)
-#write.csv(PlantConcs, row.names = F, file.path(paste0("Outputs2025"), 'PlantConc.csv'))
+write.csv(PlantConcs, row.names = F, file.path(paste0("Outputs2025"), 'PlantConc.csv'))
 
 LeachedConcs <- data.frame(1:iTime, LeachedConc)
-#write.csv(LeachedConcs, row.names = F, file.path(paste0("Outputs2025"), 'LeachedConc.csv'))
+write.csv(LeachedConcs, row.names = F, file.path(paste0("Outputs2025"), 'LeachedConc.csv'))
 
 
 # Version info ------------------------------------------------------------
 
 # Date      | Name         | Changes
 ---------------------------------------------------------------------------
-# 6/6/2024  | H Thompson  | Changed main loop to give read out of topsoil concentration for every year of the simulation
-# 10/6/24   | H Thompson  | Wrote in line to calculate concentration of TE in leachate at end of simulation 
-# 30/7/25   | H Thompson  | Functions for Langmuir Kd and yearly weather data (RF only) integrated
-# 17/12/25  | H Thompson  | Code tidied, uploaded to github
+# 6/6/2024    | H Thompson  | Changed main loop to give read out of topsoil concentration for every year of the simulation
+# 10/6/2024   | H Thompson  | Wrote in line to calculate concentration of TE in leachate at end of simulation 
+# 30/7/2025   | H Thompson  | Functions for Langmuir Kd and yearly weather data (RF only) integrated
+# 17/12/2025  | H Thompson  | Code tidied, uploaded to github
+# 1/4/2026    | H Thompson  | New function for yearly inputs written
 
 
